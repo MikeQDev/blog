@@ -6,9 +6,6 @@ tags: Introduction Observability Politics
 author: Mike
 ---
 
-* content
-{:toc}
-
 ## Leading up to this
 Being a full-time software engineer since mid-2017, my practices, impact, and mission in the field have evolved (for the better.)
 
@@ -34,3 +31,7 @@ The other two reasons for this blog are byproducts of the first:
 No more settling for mediocracy. This is finally an opportunity to share knowledge, build synergetic relationships in this emerging field of focus, and improve modern software engineering for all.
 
 \- Mike
+
+* content
+{:toc}
+
