@@ -9,12 +9,12 @@ type: page
 * content
 {:toc}
 
-Some about me
+Check out [my portfolio](https://mikeqdev.github.io/) for more details
 
-
+<!--
 ## Contact me
 
-* GitHub：[MikeQDev](https://github.com/MikeQDev)
+* GitHub：[MikeQDev](https://github.com/MikeQDev)-->
 
 <!--## Comments
 
