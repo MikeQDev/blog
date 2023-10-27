@@ -11,7 +11,7 @@ author: Mike
 ## Reality check
 As brash as it sounds: if you don't have adequate monitoring and alerting built into your systems (along with proper incident response), then you don't care about your users
 
-Without proper M+A (Monitoring and Alerting) practices, you risk poor user experiences, which undoubtedly leads to loss of revenue, reputation, and customer trust. Proper M+A techniques are crucial to the success of your business
+Without proper M+A (Monitoring and Alerting) practices, you risk poor user experiences, which undoubtedly leads to loss of revenue, reputation, and customer trust. Proper M+A (preferably, SLO-driven) along with remediation techniques are crucial to the success of your business
 
 As a rule of thumb: if it's not monitored, it's not ready for production. Unfortunately, engineers commonly implement monitoring solely to "check the box". This can be even worse than not having any monitoring at all -- think about the noise generated from false alerts, or flat out spinning your wheels to monitor things that yield no value. It's vital that your M+A approach is sound and enables you to serve your customers reliably
 
@@ -34,6 +34,8 @@ Having several tools in the M+A space adds some overhead, but this may be the ap
 ### Culture
 
 Everyone in your org needs to be on the same page with your M+A and incident response process. From the engineers to upper-level management -- on-call or not -- the practices must be understood (at different depths, depending on the role) and adopted accordingly. Not having this transparency runs the risk of engineer burnout, underappreciated on-call engineers, excuses, and system downtime
+
+It's also important that a **blameless** culture is in place [to ensure more reliable systems](https://sre.google/workbook/postmortem-culture/) and to foster a healthy engineering community
 
 #### Who builds it, runs it
 I'm a firm believer of "you build it, you run it" (basically, if you write the software, you should be responsible for it in production as well). The contrary often results in teams writing and deploying software, then expecting a help-desk/support technician to execute steps from a runbook (more on this later) to solve issues when they occur. This is a *terrible* idea!
@@ -74,12 +76,11 @@ At a minimum, SLOs (Service Level Objectives) should be defined as soon as syste
 #### Signals
 [Telemetry signals]({{ site.baseurl }}/2023/07/07/signals/) such as metrics, logs, and traces are useful for monitoring. These signals have the ability to alert engineers when thresholds (preferably, [SLO burn rates](https://sre.google/workbook/alerting-on-slos#4-alert-on-burn-rate)) are at risk of being breached. While there are many signals you can monitor and alert on, my recommendations are as follows, in order:
 
-- Metrics -- metrics come in the form of application metrics (related to your business logic; perhaps even KPIs) and system metrics (related to infrastructure). Your best bet is to capture both, and only alert on what matters most to your end users. A few examples:
-  - Latency -- useful; if users experience slowness in your site, they are likely to bounce (leave)
-  - Availability -- useful; if users can't access your system, they are likely to bounce (leave)
+- Metrics -- metrics come in the form of application metrics (related to your business logic; perhaps even KPIs) and system metrics (related to infrastructure). Your best bet is to capture both, and only alert on what matters most to your end users. **While the nature of computing is often spikey (which can lead to false alarms), aggregating appropriate metrics into SLIs (think of this as a calculation of `validEvents` divided by `totalEvents` over a period of time) for comparison against SLOs is usually the sensible approach to avoid these issues with M+A**. A few examples:
+  - Latency -- useful; if users experience slowness in your site, they are likely to bounce (leave). A basic way to measure latency as an SLI is `fastEnoughRequestsRate = requestsFasterThan100msCount/totalRequestCount` (over a rolling period of time)
+  - Availability -- useful; if users can't access your system, they are likely to bounce (leave). A basic way to measure availabilty as an SLI is `successRate = successfulRequestCount/totalRequestCount` (over a rolling period of time)
   - CPU utilization -- *may be* useful, but if you're at 99% CPU usage and systems are still operating smoothly, why bother alerting?
   - Disk storage -- *may be* useful, but if you're in the cloud, using elastic/scalable storage, it's less useful. Instead, maybe monitor the *trend* of how much storage space is utilized (e.g.: disk usage increased by 20gB last night), as well as the prediction of future utilization
-  - **Note: while the nature of computing is often spikey (which can lead to false alarms), aggregating metrics into SLIs (for comparison against SLOs) over a period of time is usually the sensible approach for M+A**
   - Other examples can be found in [Google's example SLO document](https://sre.google/workbook/slo-document/)
 - Traces -- could alert on traces, though you'll likely want to alert on *aggregate* traces (e.g.: many traces reporting failures, not just a single trace) to ensure the alert was not triggered by a single, transient failure
   - Rather than traces being the *why* of an alert, traces may be better utilized to identify *who* to alert in a distributed system. For example, if TeamA's app is facing issues, but the failing spans are stemming from a dependency owned by TeamB, there's usually not much value in alerting TeamA. Perhaps make TeamA aware via a low-urgency alert, but the high-urgency alert should go directly to TeamB for proper resolution
@@ -144,6 +145,8 @@ Lastly, monitoring and alerting is a never-ending evolution. Just as our systems
 This post was inspired by and contain many ideas from the book [Practical Monitoring by Mike Julian (2017)](https://www.oreilly.com/library/view/practical-monitoring/9781491957349/). Although technology has changed vastly since published, the majority of the concepts in the book still hold true; certainly worth a read
 
 [Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/) from Google's SRE book
+
+[u/DakkinByte's feedback on this post](https://www.reddit.com/r/sre/comments/17g1g9p/comment/k6gznvl) (suggestions incorporated into this post on 2023-Oct-26)
 
 * content
 {:toc}
