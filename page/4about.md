@@ -9,7 +9,9 @@ type: page
 * content
 {:toc}
 
-Check out [my portfolio](https://mikeqdev.github.io/) for more details
+[My "portfolio"](https://mikeqdev.github.io/)
+
+Email: MikeQDev [at] gmail [dot] com
 
 <!--
 ## Contact me
